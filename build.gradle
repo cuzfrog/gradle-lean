@@ -2,6 +2,8 @@ plugins {
     id 'java-gradle-plugin'
 }
 
+version = '0.0.1-SNAPSHOT'
+
 gradlePlugin {
     plugins {
         leanPlugin {
@@ -14,13 +16,19 @@ gradlePlugin {
 dependencies {
     compile gradleApi()
     compile localGroovy()
+    compile 'org.vafer:jdependency:1.4'
     testCompile('org.junit.jupiter:junit-jupiter-api:5.2.0')
     testRuntime('org.junit.jupiter:junit-jupiter-engine:5.2.0')
     testCompile("org.assertj:assertj-core:3.10.0")
+    testCompile("com.google.jimfs:jimfs:1.1")
 }
 
 repositories {
     maven {
         url = "http://maven.aliyun.com/nexus/content/groups/public"
     }
+}
+
+test {
+    useJUnitPlatform()
 }

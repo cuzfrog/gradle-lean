@@ -1,0 +1,16 @@
+plugins {
+    id "com.github.cuzfrog.gradle.lean.LeanPlugin"
+    id 'java'
+}
+
+mainClassName = "TestApp"
+
+dependencies {
+    compile 'com.google.guava:guava:23.0'
+}
+
+repositories {
+    maven {
+        url = "http://maven.aliyun.com/nexus/content/groups/public"
+    }
+}
