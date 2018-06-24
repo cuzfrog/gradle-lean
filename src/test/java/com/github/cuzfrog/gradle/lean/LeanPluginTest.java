@@ -17,7 +17,7 @@ final class LeanPluginTest {
 
     @BeforeEach
     void setup() throws Exception {
-        buildDir = TestFileSystem.createTempDir();
+        buildDir = TestFileSystem.createConcreteTempDir();
         FileUtils.copyDirectory(new File(Resources.getResource("build-root").getPath()), buildDir.toFile());
         System.out.println("Build dir:" + buildDir);
     }

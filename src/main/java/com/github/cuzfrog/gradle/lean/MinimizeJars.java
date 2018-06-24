@@ -42,22 +42,26 @@ class MinimizeJars extends DefaultTask {
     void minimizeJars() throws Exception {
         final String artifactName = archivePath.getName();
         final ClazzpathUnit artifact = cp.addClazzpathUnit(archivePath, artifactName);
-        for (final File jar : getLibJars(installDir.toPath(), artifactName)) {
-            cp.addClazzpathUnit(jar, jar.getName());
+        final List<Path> dependencyJars = getLibJars(installDir.toPath(), artifactName);
+        for (final Path jar : dependencyJars) {
+            cp.addClazzpathUnit(jar.toFile(), jar.getFileName().toString());
         }
 
         final Set<Clazz> removable = cp.getClazzes();
         removable.removeAll(artifact.getClazzes());
         removable.removeAll(artifact.getTransitiveDependencies());
 
-        removable.forEach(System.out::println);
+        for (final Path jar : dependencyJars) {
+            System.out.println("Try to minimize:" + jar);
+            JarMan.removeEntry(jar, removable);
+        }
     }
 
-    private static List<File> getLibJars(final Path installDir, final String artifactName) throws IOException {
+    private static List<Path> getLibJars(final Path installDir, final String artifactName) throws IOException {
         return Files.list(installDir.resolve("lib"))
                 .filter(p -> {
                     final String name = p.getFileName().toString();
                     return name.endsWith(".jar") && !name.equals(artifactName);
-                }).map(Path::toFile).collect(Collectors.toList());
+                }).collect(Collectors.toList());
     }
 }

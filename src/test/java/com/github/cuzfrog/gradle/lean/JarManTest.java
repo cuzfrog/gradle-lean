@@ -33,8 +33,9 @@ class JarManTest {
     @Test
     void removeEntry() throws IOException {
         final long originalSize = Files.size(jarPath);
-        Clazz clazz = new Clazz("org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement");
-        JarMan.removeEntry(jarPath, Sets.newHashSet(clazz));
+        final Clazz clazz = new Clazz("org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement");
+        final Clazz otherClass = new Clazz("some.other.package.SomeClass");
+        JarMan.removeEntry(jarPath, Sets.newHashSet(clazz, otherClass));
         assertThat(Files.size(jarPath)).isLessThan(originalSize);
     }
 }

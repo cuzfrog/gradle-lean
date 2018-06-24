@@ -1,7 +1,5 @@
 package com.github.cuzfrog.gradle.lean;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.vafer.jdependency.Clazz;
 
 import java.io.IOException;
@@ -26,11 +24,9 @@ final class JarMan {
         try (final FileSystem zipfs = FileSystems.newFileSystem(jarUri, properties)) {
             for (final Clazz clazz : removable) {
                 final String classPath = clazz.getName().replaceAll("\\.", "/") + ".class";
-                System.out.println("Try to remove class:" + classPath);
                 final Path pathInZipfile = zipfs.getPath(classPath);
                 Files.deleteIfExists(pathInZipfile);
             }
-
             recursivelyRemoveEmptyDir(zipfs.getPath("/"));
         }
     }
