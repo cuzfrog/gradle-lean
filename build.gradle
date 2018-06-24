@@ -15,16 +15,21 @@ gradlePlugin {
 
 dependencies {
     compile gradleApi()
-    //compile localGroovy()
     compile 'org.vafer:jdependency:1.4'
     testCompile('org.junit.jupiter:junit-jupiter-api:5.2.0')
     testRuntime('org.junit.jupiter:junit-jupiter-engine:5.2.0')
     testCompile("org.assertj:assertj-core:3.10.0")
     testCompile("com.google.guava:guava:23.0")
-    //testCompile("com.google.jimfs:jimfs:1.1")
+    testCompile("com.google.jimfs:jimfs:1.1")
+    //testRuntime('ch.qos.logback:logback-classic:1.2.3')
+}
+
+configurations {
+    testRuntime.exclude group: 'org.gradle.internal.logging'
 }
 
 repositories {
+    mavenLocal()
     maven {
         url = "http://maven.aliyun.com/nexus/content/groups/public"
     }
