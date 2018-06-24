@@ -19,6 +19,7 @@ final class LeanPluginTest {
     void setup() throws Exception {
         buildDir = TestFileSystem.createTempDir();
         FileUtils.copyDirectory(new File(Resources.getResource("build-root").getPath()), buildDir.toFile());
+        System.out.println("Build dir:" + buildDir);
     }
 
     @Test
@@ -26,7 +27,7 @@ final class LeanPluginTest {
         final BuildResult result = GradleRunner.create()
                 .withProjectDir(buildDir.toFile())
                 .forwardOutput()
-                .withArguments("installDist", "--stacktrace")
+                .withArguments("installDist", "minimizeJars", "--stacktrace")
                 .withPluginClasspath()
                 .build();
         Files.list(buildDir).forEach(System.out::println);
