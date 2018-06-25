@@ -31,16 +31,22 @@ final class JarMan {
         }
     }
 
-    private static void recursivelyRemoveEmptyDir(final Path dir) throws IOException {
+    /**
+     * @return true if the dir is deleted, because it has no children or its children are all deleted
+     */
+    private static boolean recursivelyRemoveEmptyDir(final Path dir) throws IOException {
         final List<Path> children = Files.list(dir).collect(Collectors.toList());
-        if (children.isEmpty()) {
-            Files.deleteIfExists(dir);
-        } else {
-            for (final Path child : children) {
-                if (Files.isDirectory(child)) {
-                    recursivelyRemoveEmptyDir(child);
-                }
+        boolean noChildren = true;
+        for (final Path child : children) {
+            if (Files.isDirectory(child)) {
+                noChildren = recursivelyRemoveEmptyDir(child) && noChildren;
+            } else {
+                noChildren = false;
             }
         }
+        if (noChildren) {
+            Files.deleteIfExists(dir);
+        }
+        return noChildren;
     }
 }
