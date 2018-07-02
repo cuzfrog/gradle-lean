@@ -17,7 +17,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class JarManTest {
+final class JarManTest {
     private static final Path tmpDir = TestFileSystem.createDir("/tmp");
     private final Path jarPath = genTestJar();
 
