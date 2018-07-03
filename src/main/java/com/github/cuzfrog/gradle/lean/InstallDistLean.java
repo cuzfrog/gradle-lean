@@ -8,6 +8,8 @@ import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.internal.impldep.com.google.common.annotations.VisibleForTesting;
 import org.gradle.jvm.tasks.Jar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.vafer.jdependency.Clazz;
 import org.vafer.jdependency.Clazzpath;
 import org.vafer.jdependency.ClazzpathUnit;
@@ -20,6 +22,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 class InstallDistLean extends DefaultTask {
+    private static final Logger logger = LoggerFactory.getLogger(InstallDistLean.class);
+
     static final String TASK_NAME = "installDistLean";
 
     private final Path archivePath;
@@ -32,12 +36,6 @@ class InstallDistLean extends DefaultTask {
         final Sync copyTask = (Sync) tasks.getAt(DistributionPlugin.TASK_INSTALL_NAME);
         installDir = copyTask.getDestinationDir().toPath();
         this.dependsOn(copyTask);
-    }
-
-    @VisibleForTesting
-    InstallDistLean(final Path archivePath, final Path installDir) {
-        this.archivePath = archivePath;
-        this.installDir = installDir;
     }
 
     @TaskAction
@@ -55,7 +53,7 @@ class InstallDistLean extends DefaultTask {
         removable.removeAll(artifact.getTransitiveDependencies());
 
         for (final Path jar : dependencyJars) {
-            System.out.println("Try to reduce:" + jar);
+            logger.debug("Try to minimize jar: {}", jar);
             JarMan.removeEntry(jar, removable);
         }
     }
