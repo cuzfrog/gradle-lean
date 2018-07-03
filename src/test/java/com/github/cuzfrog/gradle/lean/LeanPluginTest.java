@@ -4,12 +4,15 @@ import com.google.common.io.Resources;
 import org.apache.commons.io.FileUtils;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
+import org.gradle.testkit.runner.TaskOutcome;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import static org.assertj.core.api.Assertions.*;
 
 final class LeanPluginTest {
 
@@ -23,13 +26,18 @@ final class LeanPluginTest {
     }
 
     @Test
-    void apply() throws Exception {
+    void installDistLean() throws Exception {
         final BuildResult result = GradleRunner.create()
                 .withProjectDir(buildDir.toFile())
                 .forwardOutput()
-                .withArguments("installDist", "minimizeJars", "--stacktrace")
+                .withArguments(InstallDistLean.TASK_NAME, "--stacktrace")
                 .withPluginClasspath()
                 .build();
+        assertThat(result.taskPaths(TaskOutcome.SUCCESS)).contains(":installDist", ":installDistLean");
+
         Files.list(buildDir).forEach(System.out::println);
+
+        final Path aJar = buildDir.resolve("build/install/gradle-lean-test/lib/guava-23.0.jar");
+        assertThat(Files.size(aJar)).isLessThan(20000);
     }
 }
