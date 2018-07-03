@@ -11,6 +11,6 @@ final class LeanPlugin implements Plugin<Project> {
         project.getPluginManager().apply(ApplicationPlugin.class);
         project.getPluginManager().apply(JavaPlugin.class);
 
-        project.getTasks().create("minimizeJars", MinimizeJars.class);
+        project.getTasks().create(InstallDistLean.TASK_NAME, InstallDistLean.class);
     }
 }
