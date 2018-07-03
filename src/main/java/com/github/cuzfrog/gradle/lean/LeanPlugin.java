@@ -12,5 +12,6 @@ final class LeanPlugin implements Plugin<Project> {
         project.getPluginManager().apply(JavaPlugin.class);
 
         project.getTasks().create(InstallDistLean.TASK_NAME, InstallDistLean.class);
+        project.getTasks().create(DistZipLean.TASK_NAME, DistZipLean.class);
     }
 }

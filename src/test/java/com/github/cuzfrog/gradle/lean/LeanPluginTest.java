@@ -35,9 +35,20 @@ final class LeanPluginTest {
                 .build();
         assertThat(result.taskPaths(TaskOutcome.SUCCESS)).contains(":installDist", ":installDistLean");
 
-        Files.list(buildDir).forEach(System.out::println);
-
         final Path aJar = buildDir.resolve("build/install/gradle-lean-test/lib/guava-23.0.jar");
         assertThat(Files.size(aJar)).isLessThan(20000);
+    }
+
+    @Test
+    void distZipLean() throws Exception {
+        final BuildResult result = GradleRunner.create()
+                .withProjectDir(buildDir.toFile())
+                .forwardOutput()
+                .withArguments(DistZipLean.TASK_NAME, "--stacktrace")
+                .withPluginClasspath()
+                .build();
+        assertThat(result.taskPaths(TaskOutcome.SUCCESS)).contains(":distZip", ":distZipLean");
+
+        Files.list(buildDir).forEach(System.out::println);
     }
 }
