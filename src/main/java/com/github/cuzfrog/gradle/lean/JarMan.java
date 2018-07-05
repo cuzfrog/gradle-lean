@@ -1,32 +1,29 @@
 package com.github.cuzfrog.gradle.lean;
 
-import org.gradle.internal.impldep.com.google.common.collect.ImmutableMap;
 import org.vafer.jdependency.Clazz;
 
 import java.io.IOException;
-import java.net.URI;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 final class JarMan {
-    private static final Map<String, String> properties = ImmutableMap.of("create", "false");
 
     static void removeEntry(final Path jarFile, final Set<Clazz> removable) throws IOException {
-        final URI jarUri = URI.create("jar:" + jarFile.toUri());
-        try (final FileSystem zipfs = FileSystems.newFileSystem(jarUri, properties)) {
-            for (final Clazz clazz : removable) {
-                final String classPath = clazz.getName().replaceAll("\\.", "/") + ".class";
-                final Path pathInZipfile = zipfs.getPath(classPath);
-                Files.deleteIfExists(pathInZipfile);
+        ZipFsUtils.onZipFileSystem(jarFile, zipfs -> {
+            try {
+                for (final Clazz clazz : removable) {
+                    final String classPath = clazz.getName().replaceAll("\\.", "/") + ".class";
+                    final Path pathInZipfile = zipfs.getPath(classPath);
+                    Files.deleteIfExists(pathInZipfile);
+                }
+                recursivelyRemoveEmptyDir(zipfs.getPath("/"));
+            } catch (final IOException e) {
+                throw new RuntimeException("Error happened during removing entry in jar:" + jarFile, e);
             }
-            recursivelyRemoveEmptyDir(zipfs.getPath("/"));
-        }
+        });
     }
 
     /**
