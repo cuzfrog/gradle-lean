@@ -15,7 +15,7 @@ class ZipFsUtilsTest {
     private final Path zipPath = tmpDir.resolve("test.zip");
 
     @Test
-    void onZipFileSystem() throws IOException {
+    void onZipFileSystem() {
         final byte[] content = RandomStringUtils.randomAlphanumeric(200).getBytes();
 
         ZipFsUtils.onZipFileSystem(zipPath, zipFs -> {

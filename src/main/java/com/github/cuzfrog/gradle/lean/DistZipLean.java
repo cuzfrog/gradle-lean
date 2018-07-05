@@ -7,18 +7,14 @@ import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.bundling.Zip;
-import org.gradle.internal.impldep.com.google.common.collect.ImmutableMap;
 import org.gradle.jvm.tasks.Jar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.Map;
-import java.util.function.Consumer;
 
 class DistZipLean extends DefaultTask {
     private static final Logger logger = LoggerFactory.getLogger(DistZipLean.class);

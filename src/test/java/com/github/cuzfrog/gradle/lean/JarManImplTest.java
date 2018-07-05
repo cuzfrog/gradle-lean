@@ -17,9 +17,11 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-final class JarManTest {
+final class JarManImplTest {
     private static final Path tmpDir = TestFileSystem.createDir("/tmp");
     private final Path jarPath = genTestJar();
+
+    private final JarMan jarMan = JarMan.newInstance();
 
     @AfterEach
     void teardown() throws IOException {
@@ -32,7 +34,7 @@ final class JarManTest {
         final Clazz remove1 = new Clazz("com.github.cuzfrog.gradle.lean.LeanPlugin");
         final Clazz noisy = new Clazz("some.other.package.SomeClass");
 
-        JarMan.removeEntry(jarPath, Sets.newHashSet(remove1, noisy));
+        jarMan.removeEntry(jarPath, Sets.newHashSet(remove1, noisy));
         assertThat(Files.size(jarPath)).isLessThan(originalSize);
 
         final URI jarUri = URI.create("jar:" + jarPath.toUri());
