@@ -39,6 +39,7 @@ class DistZipLean extends DefaultTask {
 
     @TaskAction
     void taskAction() throws IOException {
+        logger.debug("Try to lean archive '{}'", zipArchivePath);
         final Path minZipPath = genMinZipPath(zipArchivePath);
         try {
             Files.copy(zipArchivePath, minZipPath, StandardCopyOption.REPLACE_EXISTING);
@@ -46,6 +47,7 @@ class DistZipLean extends DefaultTask {
         }finally {
             Files.deleteIfExists(minZipPath);
         }
+        logger.debug("Archive '{}' leaning completed.", zipArchivePath);
     }
 
     private static Path genMinZipPath(final Path zipArchivePath) {

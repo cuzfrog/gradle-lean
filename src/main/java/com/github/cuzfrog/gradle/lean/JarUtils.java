@@ -1,5 +1,7 @@
 package com.github.cuzfrog.gradle.lean;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.vafer.jdependency.Clazz;
 import org.vafer.jdependency.Clazzpath;
 import org.vafer.jdependency.ClazzpathUnit;
@@ -12,6 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 final class JarUtils {
+    private static final Logger logger = LoggerFactory.getLogger(JarUtils.class);
 
     static void minimizeJars(final Path archivePath, final Path libDir) {
         try {
@@ -28,6 +31,7 @@ final class JarUtils {
             removable.removeAll(artifact.getTransitiveDependencies());
 
             for (final Path jar : dependencyJars) {
+                logger.trace("Try to minimize jar '{}'", jar);
                 JarMan.removeEntry(jar, removable);
             }
         }catch (final IOException e){

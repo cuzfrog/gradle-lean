@@ -30,7 +30,9 @@ class InstallDistLean extends DefaultTask {
     }
 
     @TaskAction
-    void minimizeJars() throws Exception {
+    void taskAction() {
+        logger.debug("Try to minimize installed jars.");
         JarUtils.minimizeJars(archivePath, installDir.resolve("lib"));
+        logger.debug("Installed jars minimized.");
     }
 }
