@@ -1,5 +1,6 @@
 package com.github.cuzfrog.gradle.lean;
 
+import org.gradle.internal.impldep.com.google.common.collect.ImmutableMap;
 import org.vafer.jdependency.Clazz;
 
 import java.io.IOException;
@@ -8,16 +9,13 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 final class JarMan {
-    private static final Map<String, String> properties = new HashMap<String, String>() {{
-        put("create", "false");
-    }};
+    private static final Map<String, String> properties = ImmutableMap.of("create", "false");
 
     static void removeEntry(final Path jarFile, final Set<Clazz> removable) throws IOException {
         final URI jarUri = URI.create("jar:" + jarFile.toUri());
