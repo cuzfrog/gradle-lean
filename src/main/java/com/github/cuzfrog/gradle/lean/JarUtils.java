@@ -13,21 +13,25 @@ import java.util.stream.Collectors;
 
 final class JarUtils {
 
-    static void minimizeJars(final Path archivePath, final Path libDir) throws Exception {
-        final Clazzpath cp = new Clazzpath();
-        final ClazzpathUnit artifact = cp.addClazzpathUnit(archivePath.toFile());
+    static void minimizeJars(final Path archivePath, final Path libDir) {
+        try {
+            final Clazzpath cp = new Clazzpath();
+            final ClazzpathUnit artifact = cp.addClazzpathUnit(archivePath.toFile());
 
-        final List<Path> dependencyJars = getLibDependencyJars(libDir, archivePath.getFileName().toString());
-        for (final Path jar : dependencyJars) {
-            cp.addClazzpathUnit(jar.toFile(), jar.getFileName().toString());
-        }
+            final List<Path> dependencyJars = getLibDependencyJars(libDir, archivePath.getFileName().toString());
+            for (final Path jar : dependencyJars) {
+                cp.addClazzpathUnit(jar.toFile(), jar.getFileName().toString());
+            }
 
-        final Set<Clazz> removable = cp.getClazzes();
-        removable.removeAll(artifact.getClazzes());
-        removable.removeAll(artifact.getTransitiveDependencies());
+            final Set<Clazz> removable = cp.getClazzes();
+            removable.removeAll(artifact.getClazzes());
+            removable.removeAll(artifact.getTransitiveDependencies());
 
-        for (final Path jar : dependencyJars) {
-            JarMan.removeEntry(jar, removable);
+            for (final Path jar : dependencyJars) {
+                JarMan.removeEntry(jar, removable);
+            }
+        }catch (final IOException e){
+            throw new RuntimeException("Error happened while minimizing jars in dir:" + libDir, e);
         }
     }
 
