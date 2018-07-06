@@ -7,13 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.vafer.jdependency.Clazz;
 
 import java.io.IOException;
-import java.net.URI;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,12 +32,11 @@ final class JarManImplTest {
         jarMan.removeEntry(jarPath, Sets.newHashSet(remove1, noisy));
         assertThat(Files.size(jarPath)).isLessThan(originalSize);
 
-        final URI jarUri = URI.create("jar:" + jarPath.toUri());
-        try (final FileSystem zipfs = FileSystems.newFileSystem(jarUri, new HashMap<>())) {
+        ZipFsUtils.onZipFileSystem(jarPath, zipfs -> {
             assertThat(zipfs.getPath("empty")).doesNotExist();
             assertThat(zipfs.getPath("com/github/cuzfrog/gradle")).doesNotExist();
             assertThat(zipfs.getPath("com/github/cuzfrog/sbt")).exists();
-        }
+        });
     }
 
     /**
@@ -55,32 +49,29 @@ final class JarManImplTest {
      */
     private static Path genTestJar() {
         final Path jarPath = tmpDir.resolve("my-test.jar");
-        final URI jarUri = URI.create("jar:" + jarPath.toUri());
-        System.out.println(jarUri);
-        final Map<String, String> properties = new HashMap<String, String>() {{
-            put("create", "true");
-        }};
-        try (final FileSystem zipfs = FileSystems.newFileSystem(jarUri, properties)) {
-            final Path webInf = zipfs.getPath("META-INF");
-            Files.createDirectory(webInf);
-            Files.write(webInf.resolve("MANIFEST.MF"), randomBytes());
+        ZipFsUtils.onZipFileSystem(jarPath, zipfs -> {
+            try {
+                final Path webInf = zipfs.getPath("META-INF");
+                Files.createDirectory(webInf);
+                Files.write(webInf.resolve("MANIFEST.MF"), randomBytes());
 
-            final Path d1 = Files.createDirectory(zipfs.getPath("com"));
-            final Path d2 = Files.createDirectory(d1.resolve("github"));
-            final Path d3 = Files.createDirectory(d2.resolve("cuzfrog"));
+                final Path d1 = Files.createDirectory(zipfs.getPath("com"));
+                final Path d2 = Files.createDirectory(d1.resolve("github"));
+                final Path d3 = Files.createDirectory(d2.resolve("cuzfrog"));
 
-            final Path d41 = Files.createDirectory(d3.resolve("gradle"));
-            final Path d51 = Files.createDirectory(d41.resolve("lean"));
-            Files.write(d51.resolve("LeanPlugin.class"), randomBytes());
+                final Path d41 = Files.createDirectory(d3.resolve("gradle"));
+                final Path d51 = Files.createDirectory(d41.resolve("lean"));
+                Files.write(d51.resolve("LeanPlugin.class"), randomBytes());
 
-            final Path d42 = Files.createDirectory(d3.resolve("sbt"));
-            Files.write(d42.resolve("TmpfsPlugin.class"), randomBytes());
+                final Path d42 = Files.createDirectory(d3.resolve("sbt"));
+                Files.write(d42.resolve("TmpfsPlugin.class"), randomBytes());
 
-            final Path empty = Files.createDirectory(zipfs.getPath("empty"));
-            Files.createDirectory(empty.resolve("sub"));
-        } catch (final Exception e) {
-            throw new RuntimeException(e);
-        }
+                final Path empty = Files.createDirectory(zipfs.getPath("empty"));
+                Files.createDirectory(empty.resolve("sub"));
+            } catch (final IOException e) {
+                throw new RuntimeException(e);
+            }
+        }, true);
         return jarPath;
     }
 

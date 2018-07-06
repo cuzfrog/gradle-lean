@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 
 final class TestFileSystem {
 
@@ -32,5 +33,19 @@ final class TestFileSystem {
             }
         }
         return p;
+    }
+
+    static void deleteDir(final Path dir) {
+        try {
+            Files.walk(dir).sorted(Comparator.reverseOrder()).forEach(path -> {
+                try {
+                    Files.deleteIfExists(path);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
