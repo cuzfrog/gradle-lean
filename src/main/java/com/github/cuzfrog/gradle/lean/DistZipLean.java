@@ -39,7 +39,11 @@ class DistZipLean extends DefaultTask {
         final Path minZipPath = genMinZipPath(zipArchivePath);
         try {
             Files.copy(zipArchivePath, minZipPath, StandardCopyOption.REPLACE_EXISTING);
-            ZipFsUtils.onZipFileSystem(minZipPath, zipFs -> JarUtils.minimizeJars(archivePath, zipFs.getPath("lib")));
+
+            ZipFsUtils.onZipFileSystem(minZipPath, zipFs -> { //todo: try to remove hardcoded 'lib'
+                final Path libDir = zipFs.getPath(FilenameUtils.getBaseName(zipArchivePath.toString())).resolve("lib");
+                JarUtils.minimizeJars(archivePath, libDir);
+            });
         }finally {
             Files.deleteIfExists(minZipPath);
         }
