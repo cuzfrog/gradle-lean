@@ -11,15 +11,31 @@ This project is to provide a lightweight way to reduce the size of an java appli
 This plugin depends on `JavaPlugin` and `ApplicationPlugin`.
 
 * for `installDist`, jars under `install/$PROJECT_NAME$/lib/`
-* for `distZip`, `distTar`, jars under `/lib/` inside package
-* any customized jars
+* for `distZip`, jars under `/lib/` inside package
 
-are automatically minimized.
+will be minimized by respective lean tasks.
+
+### Todo list:
+
+* __get this plugin published!__
+* lean for `distTar`
+* customized jars
+* exclusive classes
 
 ## How to use:
 
-### Retain classes:
+Add gradle-lean plugin to build:
 
+```groovy
+plugins {
+    id "com.github.cuzfrog.gradle.lean.LeanPlugin"
+}
+```
+
+Execute gradle tasks:
+
+* `installDistLean` will trigger `installDist` and then minimize the jars.
+* `distZipLean` will trigger `distZip` and then minimize the zip archive.
 
 ## License:
 Apache-2.0
