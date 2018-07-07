@@ -55,6 +55,9 @@ final class LeanPluginTest {
                 .build();
         assertThat(result.taskPaths(TaskOutcome.SUCCESS)).contains(":distZip", ":distZipLean");
 
-        Files.list(buildDir).forEach(System.out::println);
+        final Path zip = buildDir.resolve("build/distributions/gradle-lean-test.zip");
+        final Path minZip = buildDir.resolve("build/distributions/gradle-lean-test-min.zip");
+        assertThat(Files.size(minZip)).isLessThan(Files.size(zip));
+        assertThat(Files.size(minZip)).isLessThan(40000);
     }
 }

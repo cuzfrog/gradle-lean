@@ -37,7 +37,6 @@ final class FsUtils {
                                                    final Consumer<Path> action,
                                                    final boolean createNew) throws IOException {
         final URI jarUri = URI.create("jar:" + archivePath.toUri());
-        System.out.println("actionOn:" + jarUri);
         final Map<String, String> zipProps = createNew ? newZipProps : noNewZipProps;
 
         try (final FileSystem zipfs = FileSystems.newFileSystem(jarUri, zipProps)) {
