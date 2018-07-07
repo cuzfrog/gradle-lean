@@ -9,7 +9,7 @@ import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.*;
 
-class ZipFsUtilsTest {
+class FsUtilsTest {
 
     private static final Path tmpDir = TestFileSystem.createDir("/tmp");
     private final Path zipPath = tmpDir.resolve("test.zip");
@@ -18,7 +18,7 @@ class ZipFsUtilsTest {
     void onZipFileSystem() {
         final byte[] content = RandomStringUtils.randomAlphanumeric(200).getBytes();
 
-        ZipFsUtils.onZipFileSystem(zipPath, rootPath -> {
+        FsUtils.onZipFileSystem(zipPath, rootPath -> {
             try {
                 Files.write(rootPath.resolve("file1"), content);
             } catch (IOException e) {
@@ -26,7 +26,7 @@ class ZipFsUtilsTest {
             }
         }, true);
 
-        ZipFsUtils.onZipFileSystem(zipPath, rootPath -> {
+        FsUtils.onZipFileSystem(zipPath, rootPath -> {
             try {
                 assertThat(Files.readAllBytes(rootPath.resolve("file1"))).isEqualTo(content);
             } catch (IOException e) {

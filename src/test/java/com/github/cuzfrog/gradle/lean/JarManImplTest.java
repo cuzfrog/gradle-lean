@@ -32,7 +32,7 @@ final class JarManImplTest {
         jarMan.removeEntry(jarPath, Sets.newHashSet(remove1, noisy));
         assertThat(Files.size(jarPath)).isLessThan(originalSize);
 
-        ZipFsUtils.onZipFileSystem(jarPath, rootPath -> {
+        FsUtils.onZipFileSystem(jarPath, rootPath -> {
             assertThat(rootPath.resolve("empty")).doesNotExist();
             assertThat(rootPath.resolve("com/github/cuzfrog/gradle")).doesNotExist();
             assertThat(rootPath.resolve("com/github/cuzfrog/sbt")).exists();
@@ -49,7 +49,7 @@ final class JarManImplTest {
      */
     private static Path genTestJar() {
         final Path jarPath = tmpDir.resolve("my-test.jar");
-        ZipFsUtils.onZipFileSystem(jarPath, rootPath -> {
+        FsUtils.onZipFileSystem(jarPath, rootPath -> {
             try {
                 final Path webInf = rootPath.resolve("META-INF");
                 Files.createDirectory(webInf);

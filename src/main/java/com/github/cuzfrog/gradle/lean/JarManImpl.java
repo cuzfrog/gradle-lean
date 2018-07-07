@@ -13,7 +13,7 @@ final class JarManImpl implements JarMan{
 
     @Override
     public void removeEntry(final Path jarFile, final Set<Clazz> removable) {
-        ZipFsUtils.onZipFileSystem(jarFile, rootPath -> {
+        FsUtils.onZipFileSystem(jarFile, rootPath -> {
             try {
                 for (final Clazz clazz : removable) {
                     final String classPath = clazz.getName().replaceAll("\\.", "/") + ".class";

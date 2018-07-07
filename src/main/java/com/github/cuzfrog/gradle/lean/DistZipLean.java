@@ -11,7 +11,6 @@ import org.gradle.jvm.tasks.Jar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -34,20 +33,22 @@ class DistZipLean extends DefaultTask {
     }
 
     @TaskAction
-    void taskAction() throws IOException {
+    void taskAction() throws Exception {
         logger.debug("Try to lean archive '{}'", zipArchivePath);
         final Path minZipPath = genMinZipPath(zipArchivePath);
         try {
             Files.copy(zipArchivePath, minZipPath, StandardCopyOption.REPLACE_EXISTING);
 
-            ZipFsUtils.onZipFileSystem(minZipPath, rootPath -> { //todo: try to remove hardcoded 'lib'
+            FsUtils.onZipFileSystem(minZipPath, rootPath -> { //todo: try to remove hardcoded 'lib'
                 final Path libDir = rootPath.resolve(FilenameUtils.getBaseName(zipArchivePath.toString())).resolve("lib");
                 JarUtils.minimizeJars(archivePath, libDir);
             });
-        }finally {
+            logger.debug("Archive '{}' leaning completed.", zipArchivePath);
+        }catch (final Exception e){
+            logger.error("Archive '{}' leaning failed:", zipArchivePath, e);
             Files.deleteIfExists(minZipPath);
+            throw e;
         }
-        logger.debug("Archive '{}' leaning completed.", zipArchivePath);
     }
 
     private static Path genMinZipPath(final Path zipArchivePath) {

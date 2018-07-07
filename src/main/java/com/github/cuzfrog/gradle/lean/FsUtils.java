@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-final class ZipFsUtils {
+final class FsUtils {
     private static final Map<String, String> noNewZipProps = genProperties("create", "false");
     private static final Map<String, String> newZipProps = genProperties("create", "true");
 

@@ -52,7 +52,7 @@ final class JarUtilsTest {
     }
 
     private static Path genTestJar(final Path jarPath) {
-        ZipFsUtils.onZipFileSystem(jarPath, rootPath -> {
+        FsUtils.onZipFileSystem(jarPath, rootPath -> {
             try {
                 final Path targetDir = rootPath.resolve("com/github/cuzfrog/gradle/lean");
                 Files.createDirectories(targetDir);
