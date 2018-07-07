@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.vafer.jdependency.Clazz;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -52,9 +52,9 @@ final class JarUtilsTest {
     }
 
     private static Path genTestJar(final Path jarPath) {
-        ZipFsUtils.onZipFileSystem(jarPath, zipfs -> {
+        ZipFsUtils.onZipFileSystem(jarPath, rootPath -> {
             try {
-                final Path targetDir = zipfs.getPath("com/github/cuzfrog/gradle/lean");
+                final Path targetDir = rootPath.resolve("com/github/cuzfrog/gradle/lean");
                 Files.createDirectories(targetDir);
                 final Path source = Paths.get(Resources.getResource("testJars/TestFileSystem.class").toURI());
                 Files.copy(source, targetDir.resolve("TestFileSystem.class"));

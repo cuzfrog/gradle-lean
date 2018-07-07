@@ -18,17 +18,17 @@ class ZipFsUtilsTest {
     void onZipFileSystem() {
         final byte[] content = RandomStringUtils.randomAlphanumeric(200).getBytes();
 
-        ZipFsUtils.onZipFileSystem(zipPath, zipFs -> {
+        ZipFsUtils.onZipFileSystem(zipPath, rootPath -> {
             try {
-                Files.write(zipFs.getPath("file1"), content);
+                Files.write(rootPath.resolve("file1"), content);
             } catch (IOException e) {
                 fail("Create new file in new zip failed", e);
             }
         }, true);
 
-        ZipFsUtils.onZipFileSystem(zipPath, zipFs -> {
+        ZipFsUtils.onZipFileSystem(zipPath, rootPath -> {
             try {
-                assertThat(Files.readAllBytes(zipFs.getPath("file1"))).isEqualTo(content);
+                assertThat(Files.readAllBytes(rootPath.resolve("file1"))).isEqualTo(content);
             } catch (IOException e) {
                 fail("Read file in zip failed", e);
             }

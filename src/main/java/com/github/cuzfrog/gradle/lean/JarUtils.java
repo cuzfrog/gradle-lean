@@ -33,11 +33,11 @@ final class JarUtils {
     void internalMinimizeJars(final Path archivePath, final Path libDir) {
         try {
             final Clazzpath cp = new Clazzpath();
-            final ClazzpathUnit artifact = cp.addClazzpathUnit(archivePath.toFile());
+            final ClazzpathUnit artifact = cp.addClazzpathUnit(archivePath);
 
             final List<Path> dependencyJars = getLibDependencyJars(libDir, archivePath.getFileName().toString());
             for (final Path jar : dependencyJars) {
-                cp.addClazzpathUnit(jar.toFile(), jar.getFileName().toString());
+                cp.addClazzpathUnit(jar, jar.getFileName().toString());
             }
 
             final Set<Clazz> removable = cp.getClazzes();

@@ -13,14 +13,14 @@ final class JarManImpl implements JarMan{
 
     @Override
     public void removeEntry(final Path jarFile, final Set<Clazz> removable) {
-        ZipFsUtils.onZipFileSystem(jarFile, zipfs -> {
+        ZipFsUtils.onZipFileSystem(jarFile, rootPath -> {
             try {
                 for (final Clazz clazz : removable) {
                     final String classPath = clazz.getName().replaceAll("\\.", "/") + ".class";
-                    final Path pathInZipfile = zipfs.getPath(classPath);
+                    final Path pathInZipfile = rootPath.resolve(classPath);
                     Files.deleteIfExists(pathInZipfile);
                 }
-                recursivelyRemoveEmptyDir(zipfs.getPath("/"));
+                recursivelyRemoveEmptyDir(rootPath);
             } catch (final IOException e) {
                 throw new RuntimeException("Error happened during removing entry in jar:" + jarFile, e);
             }

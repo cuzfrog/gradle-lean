@@ -32,10 +32,10 @@ final class JarManImplTest {
         jarMan.removeEntry(jarPath, Sets.newHashSet(remove1, noisy));
         assertThat(Files.size(jarPath)).isLessThan(originalSize);
 
-        ZipFsUtils.onZipFileSystem(jarPath, zipfs -> {
-            assertThat(zipfs.getPath("empty")).doesNotExist();
-            assertThat(zipfs.getPath("com/github/cuzfrog/gradle")).doesNotExist();
-            assertThat(zipfs.getPath("com/github/cuzfrog/sbt")).exists();
+        ZipFsUtils.onZipFileSystem(jarPath, rootPath -> {
+            assertThat(rootPath.resolve("empty")).doesNotExist();
+            assertThat(rootPath.resolve("com/github/cuzfrog/gradle")).doesNotExist();
+            assertThat(rootPath.resolve("com/github/cuzfrog/sbt")).exists();
         });
     }
 
@@ -49,13 +49,13 @@ final class JarManImplTest {
      */
     private static Path genTestJar() {
         final Path jarPath = tmpDir.resolve("my-test.jar");
-        ZipFsUtils.onZipFileSystem(jarPath, zipfs -> {
+        ZipFsUtils.onZipFileSystem(jarPath, rootPath -> {
             try {
-                final Path webInf = zipfs.getPath("META-INF");
+                final Path webInf = rootPath.resolve("META-INF");
                 Files.createDirectory(webInf);
                 Files.write(webInf.resolve("MANIFEST.MF"), randomBytes());
 
-                final Path d1 = Files.createDirectory(zipfs.getPath("com"));
+                final Path d1 = Files.createDirectory(rootPath.resolve("com"));
                 final Path d2 = Files.createDirectory(d1.resolve("github"));
                 final Path d3 = Files.createDirectory(d2.resolve("cuzfrog"));
 
@@ -66,7 +66,7 @@ final class JarManImplTest {
                 final Path d42 = Files.createDirectory(d3.resolve("sbt"));
                 Files.write(d42.resolve("TmpfsPlugin.class"), randomBytes());
 
-                final Path empty = Files.createDirectory(zipfs.getPath("empty"));
+                final Path empty = Files.createDirectory(rootPath.resolve("empty"));
                 Files.createDirectory(empty.resolve("sub"));
             } catch (final IOException e) {
                 throw new RuntimeException(e);
