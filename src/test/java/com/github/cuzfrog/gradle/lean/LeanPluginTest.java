@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -27,7 +28,7 @@ final class LeanPluginTest {
     }
 
     @AfterEach
-    void clear(){
+    void clear() {
         TestFileSystem.deleteDir(buildDir);
     }
 
@@ -43,6 +44,7 @@ final class LeanPluginTest {
 
         final Path aJar = buildDir.resolve("build/install/gradle-lean-test/lib/guava-23.0.jar");
         assertThat(Files.size(aJar)).isLessThan(20000);
+        assertExclusionExist(aJar);
     }
 
     @Test
@@ -59,5 +61,21 @@ final class LeanPluginTest {
         final Path minZip = buildDir.resolve("build/distributions/gradle-lean-test-min.zip");
         assertThat(Files.size(minZip)).isLessThan(Files.size(zip));
         assertThat(Files.size(minZip)).isLessThan(40000);
+    }
+
+    private static void assertExclusionExist(final Path guavaJar) {
+        FsUtils.onZipFileSystem(guavaJar, rootPath -> {
+            try {
+                final Path cachePkg = rootPath.resolve("com/google/common/cache");
+                assertThat(cachePkg).exists();
+                assertThat(Files.list(cachePkg).count()).isEqualTo(21);
+
+                final Path ioPkg = rootPath.resolve("com/google/common/io/ByteSink.class");
+                assertThat(ioPkg).exists();
+                assertThat(Files.list(ioPkg).count()).isEqualTo(1);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }

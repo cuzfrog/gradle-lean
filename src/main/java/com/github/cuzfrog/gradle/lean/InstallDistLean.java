@@ -1,6 +1,5 @@
 package com.github.cuzfrog.gradle.lean;
 
-import org.gradle.api.DefaultTask;
 import org.gradle.api.distribution.plugins.DistributionPlugin;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.tasks.Sync;
@@ -12,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 
-class InstallDistLean extends DefaultTask {
+class InstallDistLean extends AbstractLeanTask {
     private static final Logger logger = LoggerFactory.getLogger(InstallDistLean.class);
 
     static final String TASK_NAME = "installDistLean";

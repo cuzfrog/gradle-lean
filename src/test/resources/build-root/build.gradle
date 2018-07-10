@@ -5,6 +5,13 @@ plugins {
 
 mainClassName = "TestApp"
 
+leanConfig {
+    excluded = [
+            "com.google.common.cache.*",
+            "com.google.common.io.ByteSink"
+    ]
+}
+
 dependencies {
     compile 'com.google.guava:guava:23.0'
 }

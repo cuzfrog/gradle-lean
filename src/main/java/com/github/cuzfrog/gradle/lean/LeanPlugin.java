@@ -11,7 +11,15 @@ final class LeanPlugin implements Plugin<Project> {
         project.getPluginManager().apply(ApplicationPlugin.class);
         project.getPluginManager().apply(JavaPlugin.class);
 
-        project.getTasks().create(InstallDistLean.TASK_NAME, InstallDistLean.class);
-        project.getTasks().create(DistZipLean.TASK_NAME, DistZipLean.class);
+        final LeanConfigExtension extension = project.getExtensions()
+                .create("leanConfig", LeanConfigExtension.class, project);
+
+        project.getTasks().create(InstallDistLean.TASK_NAME, InstallDistLean.class, t -> config(t, extension));
+        project.getTasks().create(DistZipLean.TASK_NAME, DistZipLean.class, t -> config(t, extension));
+    }
+
+    private static void config(final AbstractLeanTask leanTask,
+                               final LeanConfigExtension leanConfigExtension) {
+        leanTask.getClassesExcluded().set(leanConfigExtension.getExcluded());
     }
 }

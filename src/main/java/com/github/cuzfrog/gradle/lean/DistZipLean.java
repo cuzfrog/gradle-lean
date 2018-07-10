@@ -1,7 +1,6 @@
 package com.github.cuzfrog.gradle.lean;
 
 import org.apache.commons.io.FilenameUtils;
-import org.gradle.api.DefaultTask;
 import org.gradle.api.plugins.ApplicationPlugin;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.tasks.TaskAction;
@@ -15,7 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-class DistZipLean extends DefaultTask {
+class DistZipLean extends AbstractLeanTask {
     private static final Logger logger = LoggerFactory.getLogger(DistZipLean.class);
 
     static final String TASK_NAME = "distZipLean";
