@@ -40,7 +40,7 @@ class DistZipLean extends AbstractLeanTask {
 
             FsUtils.onZipFileSystem(minZipPath, rootPath -> { //todo: try to remove hardcoded 'lib'
                 final Path libDir = rootPath.resolve(FilenameUtils.getBaseName(zipArchivePath.toString())).resolve("lib");
-                JarUtils.minimizeJars(archivePath, libDir);
+                Minimizer.newInstance().minimize(archivePath, libDir);
             });
             logger.debug("Archive '{}' leaning completed.", zipArchivePath);
         }catch (final Exception e){

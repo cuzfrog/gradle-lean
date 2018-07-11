@@ -14,23 +14,17 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-final class JarUtils {
-    private static final Logger logger = LoggerFactory.getLogger(JarUtils.class);
+final class MinimizerImpl implements Minimizer {
+    private static final Logger logger = LoggerFactory.getLogger(MinimizerImpl.class);
 
-    private static final JarUtils INSTANCE = new JarUtils(JarMan.newInstance());
     private final JarMan jarMan;
 
-    @VisibleForTesting
-    JarUtils(final JarMan jarMan) {
+    @VisibleForTesting MinimizerImpl(final JarMan jarMan) {
         this.jarMan = jarMan;
     }
 
-    static void minimizeJars(final Path archivePath, final Path libDir){
-        INSTANCE.internalMinimizeJars(archivePath, libDir);
-    }
-
-    @VisibleForTesting
-    void internalMinimizeJars(final Path archivePath, final Path libDir) {
+    @Override
+    public void minimize(final Path archivePath, final Path libDir) {
         try {
             final Clazzpath cp = new Clazzpath();
             final ClazzpathUnit artifact = cp.addClazzpathUnit(archivePath);

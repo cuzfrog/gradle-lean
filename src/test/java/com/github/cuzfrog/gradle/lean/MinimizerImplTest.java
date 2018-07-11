@@ -16,12 +16,12 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-final class JarUtilsTest {
+final class MinimizerImplTest {
 
     private final Path tmpDir = TestFileSystem.createConcreteTempDir();
 
     private final JarMan mockJarMan = mock(JarMan.class);
-    private final JarUtils jarUtils = new JarUtils(mockJarMan);
+    private final MinimizerImpl minimizer = new MinimizerImpl(mockJarMan);
     private final Path archive = genTestJar(tmpDir.resolve("my-test.jar"));
 
     private final ArgumentCaptor<Path> pathCaptor = ArgumentCaptor.forClass(Path.class);
@@ -44,7 +44,7 @@ final class JarUtilsTest {
             libJars.add(targetLibJar);
         }
 
-        jarUtils.internalMinimizeJars(archive, libDir);
+        minimizer.minimize(archive, libDir);
 
         verify(mockJarMan, times(2)).removeEntry(pathCaptor.capture(), clazzesCaptor.capture());
         assertThat(pathCaptor.getAllValues()).containsExactlyInAnyOrderElementsOf(libJars);
