@@ -2,6 +2,7 @@ package com.github.cuzfrog.gradle.lean;
 
 import org.vafer.jdependency.Clazz;
 
+import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Immutable
 final class JarManImpl implements JarMan{
 
     @Override

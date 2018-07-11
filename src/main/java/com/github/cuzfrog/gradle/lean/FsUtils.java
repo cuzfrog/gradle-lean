@@ -2,6 +2,7 @@ package com.github.cuzfrog.gradle.lean;
 
 import com.sun.nio.zipfs.ZipFileSystem;
 
+import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.*;
@@ -9,10 +10,13 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.function.Consumer;
 
+@Immutable
 final class FsUtils {
     private static final Map<String, String> noNewZipProps = Collections.singletonMap("create", "false");
     private static final Map<String, String> newZipProps = Collections.singletonMap("create", "true");
     private static final Path tmpDir = createTmpDir();
+
+    private FsUtils(){}
 
     static void onZipFileSystem(final Path archivePath, final Consumer<Path> action) {
         onZipFileSystem(archivePath, action, false);
