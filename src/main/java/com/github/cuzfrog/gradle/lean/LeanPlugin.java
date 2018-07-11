@@ -20,6 +20,8 @@ final class LeanPlugin implements Plugin<Project> {
 
     private static void config(final AbstractLeanTask leanTask,
                                final LeanConfigExtension leanConfigExtension) {
-        leanTask.setProvider(leanConfigExtension.getExcluded());
+        leanTask.setProvider(
+                leanConfigExtension.getExcludedClasses(),
+                leanConfigExtension.getExcludedDependencies());
     }
 }

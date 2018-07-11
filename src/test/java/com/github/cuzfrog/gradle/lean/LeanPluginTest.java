@@ -44,7 +44,7 @@ final class LeanPluginTest {
 
         final Path aJar = buildDir.resolve("build/install/gradle-lean-test/lib/guava-23.0.jar");
         assertThat(Files.size(aJar)).isLessThan(20000);
-        assertExclusionExist(aJar);
+        assertExcludedClassesExist(aJar);
     }
 
     @Test
@@ -63,7 +63,7 @@ final class LeanPluginTest {
         assertThat(Files.size(minZip)).isLessThan(40000);
     }
 
-    private static void assertExclusionExist(final Path guavaJar) {
+    private static void assertExcludedClassesExist(final Path guavaJar) {
         FsUtils.onZipFileSystem(guavaJar, rootPath -> {
             try {
                 final Path cachePkg = rootPath.resolve("com/google/common/cache");

@@ -4,13 +4,18 @@ import org.gradle.api.Project;
 import org.gradle.api.provider.ListProperty;
 
 class LeanConfigExtension {
-    private final ListProperty<String> excluded;
+    private final ListProperty<String> excludedClasses;
+    private final ListProperty<String> excludedDependencies;
 
     public LeanConfigExtension(final Project project){
-        this.excluded = project.getObjects().listProperty(String.class);
+        this.excludedClasses = project.getObjects().listProperty(String.class);
+        this.excludedDependencies = project.getObjects().listProperty(String.class);
     }
 
-    ListProperty<String> getExcluded() {
-        return excluded;
+    ListProperty<String> getExcludedClasses() {
+        return excludedClasses;
+    }
+    ListProperty<String> getExcludedDependencies() {
+        return excludedDependencies;
     }
 }

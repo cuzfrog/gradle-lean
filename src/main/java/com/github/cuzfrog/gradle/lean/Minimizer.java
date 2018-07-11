@@ -7,11 +7,11 @@ interface Minimizer {
      * Analyze and minimize dependencies.
      *
      * @param archivePath the application artifact jar path
-     * @param libDir the directory where dependency jars reside
+     * @param libDir      the directory where dependency jars reside
      */
     void minimize(final Path archivePath, final Path libDir);
 
-    static Minimizer newInstance(){
-        return new MinimizerImpl(JarMan.newInstance());
+    static Minimizer newInstance(final AbstractLeanTask leanTask) {
+        return new MinimizerImpl(JarMan.newInstance(), leanTask.getExcludedClasses(), leanTask.getExcludedDependencies());
     }
 }

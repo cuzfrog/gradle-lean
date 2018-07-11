@@ -21,7 +21,7 @@ final class MinimizerImplTest {
     private final Path tmpDir = TestFileSystem.createConcreteTempDir();
 
     private final JarMan mockJarMan = mock(JarMan.class);
-    private final MinimizerImpl minimizer = new MinimizerImpl(mockJarMan);
+    private final MinimizerImpl minimizer = new MinimizerImpl(mockJarMan, new ArrayList<>(), new ArrayList<>());
     private final Path archive = genTestJar(tmpDir.resolve("my-test.jar"));
 
     private final ArgumentCaptor<Path> pathCaptor = ArgumentCaptor.forClass(Path.class);

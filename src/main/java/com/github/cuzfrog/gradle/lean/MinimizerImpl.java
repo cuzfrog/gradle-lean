@@ -10,6 +10,8 @@ import org.vafer.jdependency.ClazzpathUnit;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -18,9 +20,16 @@ final class MinimizerImpl implements Minimizer {
     private static final Logger logger = LoggerFactory.getLogger(MinimizerImpl.class);
 
     private final JarMan jarMan;
+    private final List<String> excludedClasses;
+    private final List<String> excludedDependencies;
 
-    @VisibleForTesting MinimizerImpl(final JarMan jarMan) {
+    @VisibleForTesting
+    MinimizerImpl(final JarMan jarMan,
+                  final Collection<String> excludedClasses,
+                  final Collection<String> excludedDependencies) {
         this.jarMan = jarMan;
+        this.excludedClasses = new ArrayList<>(excludedClasses);
+        this.excludedDependencies = new ArrayList<>(excludedDependencies);
     }
 
     @Override
