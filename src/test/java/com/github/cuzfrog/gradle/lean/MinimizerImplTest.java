@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -23,13 +24,17 @@ final class MinimizerImplTest {
     private static final String TEST_ARTIFACT_JAR_NAME = "my-test.jar";
     private static final String RES_JAR1 = "irrelevant.jar";
     private static final String RES_JAR2 = "jimfs-1.1.jar";
+    private static final String RES_JAR3 = "junit-jupiter-api-5.2.0.jar";
+    private static final Set<String> libJarNames = Sets.newHashSet(RES_JAR1, RES_JAR2, RES_JAR3);
 
     private final Path tmpDir = TestFileSystem.createConcreteTempDir();
 
     private final JarMan mockJarMan = mock(JarMan.class);
     private final Set<String> excludedDependencies = Sets.newHashSet(
             "com.github.cuzfrog:excluded:0.0.2", "com.github.cuzfrog:noisy:3.0.2");
-    private final MinimizerImpl minimizer = new MinimizerImpl(mockJarMan, new ArrayList<>(), excludedDependencies);
+    private final Set<String> excludedClasses = Sets.newHashSet(
+            "org.junit.jupiter.api.*", "com.google.errorprone.annotations.Immutable", "com.noisy");
+    private final MinimizerImpl minimizer = new MinimizerImpl(mockJarMan, excludedClasses, excludedDependencies);
     private final Path archive = genTestArtifactJar(tmpDir.resolve(TEST_ARTIFACT_JAR_NAME));
     private Path libDir;
 
@@ -56,13 +61,15 @@ final class MinimizerImplTest {
     void minimizeJars() {
         minimizer.minimize(archive, libDir);
 
-        verify(mockJarMan, times(2)).removeEntry(pathCaptor.capture(), clazzesCaptor.capture());
-        final List<Path> expectedLibJars = new ArrayList<>();
-        expectedLibJars.add(libDir.resolve(RES_JAR1));
-        expectedLibJars.add(libDir.resolve(RES_JAR2));
+        verify(mockJarMan, times(libJarNames.size())).removeEntry(pathCaptor.capture(), clazzesCaptor.capture());
+        final Set<Path> expectedLibJars = libJarNames.stream().map(libDir::resolve).collect(Collectors.toSet());
 
         assertThat(pathCaptor.getAllValues()).containsExactlyInAnyOrderElementsOf(expectedLibJars);
-        assertThat(clazzesCaptor.getValue()).isNotEmpty();
+        final Set<String> removableClasses = clazzesCaptor.getValue().stream().map(Clazz::getName).collect(Collectors.toSet());
+        assertThat(removableClasses).hasSize(18);
+        assertThat(removableClasses).noneMatch(clz -> clz.startsWith("org.junit.jupiter.api"));
+        assertThat(removableClasses).doesNotContain("com.google.errorprone.annotations.Immutable");
+        assertThat(removableClasses).contains("com.google.errorprone.annotations.ForOverride");
     }
 
     @Test
@@ -72,9 +79,7 @@ final class MinimizerImplTest {
 
         final List<Path> depsToMinimize = minimizer.getLibDependencyJars(libDir, archive.getFileName().toString());
 
-        final List<Path> expectedLibJars = new ArrayList<>();
-        expectedLibJars.add(libDir.resolve(RES_JAR1));
-        expectedLibJars.add(libDir.resolve(RES_JAR2));
+        final Set<Path> expectedLibJars = libJarNames.stream().map(libDir::resolve).collect(Collectors.toSet());
         assertThat(depsToMinimize).containsExactlyInAnyOrderElementsOf(expectedLibJars);
     }
 

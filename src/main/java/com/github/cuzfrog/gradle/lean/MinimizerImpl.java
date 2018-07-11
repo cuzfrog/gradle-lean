@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 @Immutable
 final class MinimizerImpl implements Minimizer {
     private static final Logger logger = LoggerFactory.getLogger(MinimizerImpl.class);
+    private static Pattern jarNamePattern = Pattern.compile(".+:(.+):(.+)");
+    private static Pattern classPattern = Pattern.compile("(\\w+\\.)+(\\w+|\\*)");
 
     private final JarMan jarMan;
     private final Set<String> excludedClasses;
@@ -29,7 +31,18 @@ final class MinimizerImpl implements Minimizer {
                   final Collection<String> excludedClasses,
                   final Collection<String> excludedDependencies) {
         this.jarMan = jarMan;
-        this.excludedClasses = Collections.unmodifiableSet(new HashSet<>(excludedClasses));
+        for (final String excludedClass : excludedClasses) {
+            if(!classPattern.matcher(excludedClass).matches()){
+                throw new IllegalArgumentException(String.format(
+                        "Excluded class name can only be in format like 'dom.pkg.ClassName' or 'dom.pkg' or 'dom.pkg.*'," +
+                                " but config is: '%s'", excludedClass));
+            }
+        }
+        this.excludedClasses = Collections.unmodifiableSet(
+                excludedClasses.stream()
+                        .map(clz -> clz.endsWith(".*") ? clz.substring(0, clz.length() - 2) : clz)
+                        .collect(Collectors.toSet())
+        );
         this.excludedDependencies = Collections.unmodifiableSet(
                 excludedDependencies.stream().map(MinimizerImpl::parseJarName).collect(Collectors.toSet()));
     }
@@ -46,9 +59,11 @@ final class MinimizerImpl implements Minimizer {
                 cp.addClazzpathUnit(jar, jar.getFileName().toString());
             }
 
-            final Set<Clazz> removable = cp.getClazzes();
-            removable.removeAll(artifact.getClazzes());
-            removable.removeAll(artifact.getTransitiveDependencies());
+            final Set<Clazz> removable = cp.getClazzes().stream()
+                    .filter(clz -> excludedClasses.stream().noneMatch(ptn -> clz.getName().startsWith(ptn)))
+                    .filter(clz -> !artifact.getClazzes().contains(clz))
+                    .filter(clz -> !artifact.getTransitiveDependencies().contains(clz))
+                    .collect(Collectors.toSet());
 
             for (final Path jar : dependencyJars) {
                 logger.trace("Try to minimize jar '{}'", jar);
@@ -71,7 +86,6 @@ final class MinimizerImpl implements Minimizer {
                 .collect(Collectors.toList());
     }
 
-    private static Pattern jarNamePattern = Pattern.compile(".+:(.+):(.+)");
     private static JarNameMatcher parseJarName(final String dependencyName) {
         final Matcher matcher = jarNamePattern.matcher(dependencyName);
         if (!matcher.matches()) {
