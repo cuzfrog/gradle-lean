@@ -61,6 +61,16 @@ final class LeanPluginTest {
         final Path minZip = buildDir.resolve("build/distributions/gradle-lean-test-min.zip");
         assertThat(Files.size(minZip)).isLessThan(Files.size(zip));
         assertThat(Files.size(minZip)).isLessThan(200_000);
+
+        final Path aJar = buildDir.resolve("guava-23.0.jar");
+        FsUtils.onZipFileSystem(minZip, rootPath -> {
+            try {
+                Files.copy(rootPath.resolve("gradle-lean-test/lib/guava-23.0.jar"), aJar);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        assertExcludedClassesExist(aJar);
     }
 
     private static void assertExcludedClassesExist(final Path guavaJar) {
