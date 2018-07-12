@@ -6,7 +6,7 @@ plugins {
 mainClassName = "TestApp"
 
 leanConfig {
-    excluded = [
+    excludedClasses = [
             "com.google.common.cache.*",
             "com.google.common.io.ByteSink"
     ]

@@ -33,6 +33,5 @@ class InstallDistLean extends AbstractLeanTask {
         logger.debug("Try to minimize installed jars.");
         Minimizer.newInstance(this).minimize(archivePath, installDir.resolve("lib"));
         logger.debug("Installed jars minimized.");
-        getExcludedClasses().forEach(System.out::println);
     }
 }

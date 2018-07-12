@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 @Immutable
 final class MinimizerImpl implements Minimizer {
     private static final Logger logger = LoggerFactory.getLogger(MinimizerImpl.class);
-    private static Pattern jarNamePattern = Pattern.compile(".+:(.+):(.+)");
-    private static Pattern classPattern = Pattern.compile("(\\w+\\.)+(\\w+|\\*)");
+    private static final Pattern jarNamePattern = Pattern.compile(".+:(.+):(.+)");
+    private static final Pattern classPattern = Pattern.compile("(\\w+\\.)+(\\w+|\\*)");
 
     private final JarMan jarMan;
     private final Set<String> excludedClasses;
