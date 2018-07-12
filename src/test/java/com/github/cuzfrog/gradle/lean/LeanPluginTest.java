@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 final class LeanPluginTest {
 
@@ -45,6 +46,14 @@ final class LeanPluginTest {
         final Path aJar = buildDir.resolve("build/install/gradle-lean-test/lib/guava-23.0.jar");
         assertThat(Files.size(aJar)).isLessThan(200_000);
         assertExcludedClassesExist(aJar);
+
+        final Path jarExcluded = buildDir.resolve("build/install/gradle-lean-test/lib/jimfs-1.1.jar");
+        assertThat(jarExcluded).exists();
+        assertThat(Files.size(jarExcluded)).isGreaterThan(200_000);
+
+        final Path jarMinimized = buildDir.resolve("build/install/gradle-lean-test/lib/junit-4.12.jar");
+        assertThat(jarMinimized).exists();
+        assertThat(Files.size(jarMinimized)).isLessThan(6_000);
     }
 
     @Test
@@ -60,17 +69,23 @@ final class LeanPluginTest {
         final Path zip = buildDir.resolve("build/distributions/gradle-lean-test.zip");
         final Path minZip = buildDir.resolve("build/distributions/gradle-lean-test-min.zip");
         assertThat(Files.size(minZip)).isLessThan(Files.size(zip));
-        assertThat(Files.size(minZip)).isLessThan(200_000);
+        assertThat(Files.size(minZip)).isLessThan(400_000);
 
         final Path aJar = buildDir.resolve("guava-23.0.jar");
+        final Path jarExcluded = buildDir.resolve("jimfs-1.1.jar");
+        final Path jarMinimized = buildDir.resolve("junit-4.12.jar");
         FsUtils.onZipFileSystem(minZip, rootPath -> {
             try {
                 Files.copy(rootPath.resolve("gradle-lean-test/lib/guava-23.0.jar"), aJar);
+                Files.copy(rootPath.resolve("gradle-lean-test/lib/jimfs-1.1.jar"), jarExcluded);
+                Files.copy(rootPath.resolve("gradle-lean-test/lib/junit-4.12.jar"), jarMinimized);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
         assertExcludedClassesExist(aJar);
+        assertThat(Files.size(jarExcluded)).isGreaterThan(200_000);
+        assertThat(Files.size(jarMinimized)).isLessThan(6_000);
     }
 
     private static void assertExcludedClassesExist(final Path guavaJar) {
