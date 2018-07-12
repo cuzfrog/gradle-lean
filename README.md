@@ -20,7 +20,6 @@ will be minimized by respective lean tasks.
 * __get this plugin published!__
 * lean for `distTar`
 * customized jars
-* exclusive classes
 
 ## How to use:
 
@@ -37,8 +36,23 @@ Execute gradle tasks:
 * `installDistLean` will trigger `installDist` and then minimize the jars.
 * `distZipLean` will trigger `distZip` and then minimize the zip archive.
 
-## License:
-Apache-2.0
+### Exclusions
 
-## Author:
-Cause Chung(cuzfrog@139.com)
+Class or dependency jar exclusion can be set in `build.gradle`:
+
+```groovy
+leanConfig {
+    excludedClasses = [
+            "com.google.common.cache.*",
+            "com.google.common.io.ByteSink"
+    ]
+    excludedDependencies = [
+            "com.google.jimfs:jimfs:1.1"
+            //or "com.google.jimfs:jimfs:*"
+    ]
+}
+```
+
+## About:
+Author: Cause Chung(cuzfrog@139.com)
+License: Apache-2.0
