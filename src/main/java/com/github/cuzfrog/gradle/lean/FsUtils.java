@@ -16,7 +16,16 @@ final class FsUtils {
     private static final Map<String, String> newZipProps = Collections.singletonMap("create", "true");
     private static final Path tmpDir = createTmpDir();
 
-    private FsUtils(){}
+    private FsUtils() {}
+
+    static void onTarFileSystem(final Path archivePath, final Consumer<Path> action) {
+        final URI jarUri = URI.create("tar:" + archivePath.toUri());
+        try (final FileSystem zipfs = FileSystems.newFileSystem(jarUri, noNewZipProps)) {
+            action.accept(zipfs.getPath("/"));
+        } catch (final IOException e) {
+            throw new RuntimeException(String.format("Failed to act on archive '%s'", archivePath), e);
+        }
+    }
 
     static void onZipFileSystem(final Path archivePath, final Consumer<Path> action) {
         onZipFileSystem(archivePath, action, false);
