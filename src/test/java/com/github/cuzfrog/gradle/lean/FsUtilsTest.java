@@ -5,6 +5,7 @@ import org.gradle.internal.impldep.org.apache.commons.compress.archivers.tar.Tar
 import org.gradle.internal.impldep.org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.gradle.internal.impldep.org.apache.commons.lang.RandomStringUtils;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -46,6 +47,7 @@ final class FsUtilsTest {
         });
     }
 
+    @Disabled("Not planed to implement for tar yet")
     @Test
     void onTarFileSystem() throws IOException {
         try(final TarArchiveOutputStream tarOutput = new TarArchiveOutputStream(Files.newOutputStream(tarPath))){
