@@ -3,7 +3,7 @@ plugins {
     id 'com.gradle.plugin-publish' version '0.10.0'
 }
 
-version = '0.0.1-SNAPSHOT'
+version = '0.1.0'
 
 gradlePlugin {
     plugins {
