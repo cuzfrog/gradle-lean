@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/cuzfrog/gradle-lean.svg?branch=master)](https://travis-ci.org/cuzfrog/gradle-lean)
+
 # Gradle-lean
 
 A gradle plugin that minimizes dependency jars.
@@ -17,7 +19,6 @@ will be minimized by respective lean tasks.
 
 ### Todo list:
 
-* __get this plugin published!__
 * lean for `distTar`
 * customized jars
 
