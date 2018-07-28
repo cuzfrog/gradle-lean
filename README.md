@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/cuzfrog/gradle-lean.svg?branch=master)](https://travis-ci.org/cuzfrog/gradle-lean)
+[![Plugin version](https://img.shields.io/badge/gradle--plugin-0.1.0-blue.svg)](https://plugins.gradle.org/plugin/com.github.gradle-lean)
 
 # Gradle-lean
 
@@ -28,7 +29,7 @@ Add gradle-lean plugin to build:
 
 ```groovy
 plugins {
-    id "com.github.cuzfrog.gradle.lean.LeanPlugin"
+    id "com.github.gradle-lean"
 }
 ```
 
