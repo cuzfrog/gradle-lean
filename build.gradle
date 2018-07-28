@@ -26,6 +26,8 @@ pluginBundle {
     }
 }
 
+tasks.withType(Javadoc).all { enabled = false }
+
 dependencies {
     compile gradleApi()
     compile 'org.vafer:jdependency:2.0'
