@@ -29,7 +29,7 @@ Add gradle-lean plugin to build:
 
 ```groovy
 plugins {
-    id "com.github.gradle-lean"
+    id "com.github.gradle-lean" version "0.1.0"
 }
 ```
 
