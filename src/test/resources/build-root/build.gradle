@@ -1,5 +1,5 @@
 plugins {
-    id "com.github.cuzfrog.gradle.lean.LeanPlugin"
+    id "com.github.gradle-lean"
     id 'java'
 }
 

@@ -1,5 +1,6 @@
 plugins {
     id 'java-gradle-plugin'
+    id 'com.gradle.plugin-publish' version '0.10.0'
 }
 
 version = '0.0.1-SNAPSHOT'
@@ -7,15 +8,27 @@ version = '0.0.1-SNAPSHOT'
 gradlePlugin {
     plugins {
         leanPlugin {
-            id = 'com.github.cuzfrog.gradle.lean.LeanPlugin'
+            id = 'com.github.gradle-lean'
             implementationClass = 'com.github.cuzfrog.gradle.lean.LeanPlugin'
+        }
+    }
+}
+
+pluginBundle {
+    website = 'https://github.com/cuzfrog/gradle-lean'
+    vcsUrl = 'https://github.com/cuzfrog/gradle-lean'
+    plugins {
+        leanPlugin {
+            displayName = 'Gradle-lean Plugin'
+            description = 'A gradle plugin that minimizes dependency jars.'
+            tags = ['minimize-jars', 'maven-shade', 'gradle-shadow']
         }
     }
 }
 
 dependencies {
     compile gradleApi()
-    compile 'org.vafer:jdependency:1.5-SNAPSHOT'
+    compile 'org.vafer:jdependency:2.0'
     compile 'commons-io:commons-io:2.6'
     testCompile('org.junit.jupiter:junit-jupiter-api:5.2.0')
     testRuntime('org.junit.jupiter:junit-jupiter-engine:5.2.0')
