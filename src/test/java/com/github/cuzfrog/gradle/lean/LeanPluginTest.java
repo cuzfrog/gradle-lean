@@ -32,6 +32,7 @@ final class LeanPluginTest {
         TestFileSystem.deleteDir(buildDir);
     }
 
+    //todo: read distPath from test build.gradle
     @Test
     void installDistLean() throws Exception {
         final BuildResult result = GradleRunner.create()
@@ -42,15 +43,15 @@ final class LeanPluginTest {
                 .build();
         assertThat(result.taskPaths(TaskOutcome.SUCCESS)).contains(":installDist", ":installDistLean");
 
-        final Path aJar = buildDir.resolve("build/install/gradle-lean-test/lib/guava-23.0.jar");
+        final Path aJar = buildDir.resolve("build/install/lean-test-app/lib/guava-23.0.jar");
         assertThat(Files.size(aJar)).isLessThan(200_000);
         assertExcludedClassesExist(aJar);
 
-        final Path jarExcluded = buildDir.resolve("build/install/gradle-lean-test/lib/jimfs-1.1.jar");
+        final Path jarExcluded = buildDir.resolve("build/install/lean-test-app/lib/jimfs-1.1.jar");
         assertThat(jarExcluded).exists();
         assertThat(Files.size(jarExcluded)).isGreaterThan(200_000);
 
-        final Path jarMinimized = buildDir.resolve("build/install/gradle-lean-test/lib/junit-4.12.jar");
+        final Path jarMinimized = buildDir.resolve("build/install/lean-test-app/lib/junit-4.12.jar");
         assertThat(jarMinimized).exists();
         assertThat(Files.size(jarMinimized)).isLessThan(6_000);
     }
@@ -65,8 +66,8 @@ final class LeanPluginTest {
                 .build();
         assertThat(result.taskPaths(TaskOutcome.SUCCESS)).contains(":distZip", ":distZipLean");
 
-        final Path zip = buildDir.resolve("build/distributions/gradle-lean-test.zip");
-        final Path minZip = buildDir.resolve("build/distributions/gradle-lean-test-min.zip");
+        final Path zip = buildDir.resolve("build/distributions/lean-test-app-0.0.1.zip");
+        final Path minZip = buildDir.resolve("build/distributions/lean-test-app-0.0.1-min.zip");
         assertThat(Files.size(minZip)).isLessThan(Files.size(zip));
         assertThat(Files.size(minZip)).isLessThan(400_000);
 
@@ -75,9 +76,9 @@ final class LeanPluginTest {
         final Path jarMinimized = buildDir.resolve("junit-4.12.jar");
         FsUtils.onZipFileSystem(minZip, rootPath -> {
             try {
-                Files.copy(rootPath.resolve("gradle-lean-test/lib/guava-23.0.jar"), aJar);
-                Files.copy(rootPath.resolve("gradle-lean-test/lib/jimfs-1.1.jar"), jarExcluded);
-                Files.copy(rootPath.resolve("gradle-lean-test/lib/junit-4.12.jar"), jarMinimized);
+                Files.copy(rootPath.resolve("lean-test-app-0.0.1/lib/guava-23.0.jar"), aJar);
+                Files.copy(rootPath.resolve("lean-test-app-0.0.1/lib/jimfs-1.1.jar"), jarExcluded);
+                Files.copy(rootPath.resolve("lean-test-app-0.0.1/lib/junit-4.12.jar"), jarMinimized);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

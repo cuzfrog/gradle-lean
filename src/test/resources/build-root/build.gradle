@@ -3,6 +3,8 @@ plugins {
     id 'java'
 }
 
+applicationName = "lean-test-app"
+version = "0.0.1"
 mainClassName = "TestApp"
 
 leanConfig {

@@ -19,20 +19,19 @@ class DistZipLean extends AbstractLeanTask {
 
     static final String TASK_NAME = "distZipLean";
 
-    private final Path archivePath;
-    private final Path zipArchivePath;
+    private final Jar jarTask;
+    private final Zip zipTask;
 
     public DistZipLean() {
         final TaskContainer tasks = getProject().getTasks();
-        final Jar jarTask = (Jar) tasks.getAt(JavaPlugin.JAR_TASK_NAME);
-        archivePath = jarTask.getArchivePath().toPath();
-        final Zip zipTask = (Zip) tasks.getAt(ApplicationPlugin.TASK_DIST_ZIP_NAME);
-        zipArchivePath = zipTask.getArchivePath().toPath();
+        jarTask = (Jar) tasks.getAt(JavaPlugin.JAR_TASK_NAME);
+        zipTask = (Zip) tasks.getAt(ApplicationPlugin.TASK_DIST_ZIP_NAME);
         this.dependsOn(zipTask);
     }
 
     @TaskAction
     void taskAction() throws Exception {
+        final Path zipArchivePath = zipTask.getArchivePath().toPath();
         logger.debug("Try to lean archive '{}'", zipArchivePath);
         final Path minZipPath = genMinZipPath(zipArchivePath);
         try {
@@ -40,6 +39,7 @@ class DistZipLean extends AbstractLeanTask {
 
             FsUtils.onZipFileSystem(minZipPath, rootPath -> { //todo: try to remove hardcoded 'lib'
                 final Path libDir = rootPath.resolve(FilenameUtils.getBaseName(zipArchivePath.toString())).resolve("lib");
+                final Path archivePath = jarTask.getArchivePath().toPath();
                 Minimizer.newInstance(this).minimize(archivePath, libDir);
             });
             logger.debug("Archive '{}' leaning completed.", zipArchivePath);

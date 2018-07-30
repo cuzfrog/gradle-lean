@@ -16,21 +16,21 @@ class InstallDistLean extends AbstractLeanTask {
 
     static final String TASK_NAME = "installDistLean";
 
-    private final Path archivePath;
-    private final Path installDir;
+    private final Jar jarTask;
+    private final Sync copyTask;
 
     public InstallDistLean() {
         final TaskContainer tasks = getProject().getTasks();
-        final Jar jarTask = (Jar) tasks.getAt(JavaPlugin.JAR_TASK_NAME);
-        archivePath = jarTask.getArchivePath().toPath();
-        final Sync copyTask = (Sync) tasks.getAt(DistributionPlugin.TASK_INSTALL_NAME);
-        installDir = copyTask.getDestinationDir().toPath();
+        jarTask = (Jar) tasks.getAt(JavaPlugin.JAR_TASK_NAME);
+        copyTask = (Sync) tasks.getAt(DistributionPlugin.TASK_INSTALL_NAME);
         this.dependsOn(copyTask);
     }
 
     @TaskAction
     void taskAction() {
         logger.debug("Try to minimize installed jars.");
+        final Path archivePath = jarTask.getArchivePath().toPath();
+        final Path installDir = copyTask.getDestinationDir().toPath();
         Minimizer.newInstance(this).minimize(archivePath, installDir.resolve("lib"));
         logger.debug("Installed jars minimized.");
     }
