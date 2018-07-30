@@ -20,6 +20,7 @@ will be minimized by respective lean tasks.
 
 ### Todo list:
 
+* resolve current issues
 * lean for `distTar`
 * customized jars
 
