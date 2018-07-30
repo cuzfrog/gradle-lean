@@ -59,19 +59,31 @@ final class MinimizerImpl implements Minimizer {
                 cp.addClazzpathUnit(jar, jar.getFileName().toString());
             }
 
-            final Set<Clazz> removable = cp.getClazzes().stream()
-                    .filter(clz -> excludedClasses.stream().noneMatch(ptn -> clz.getName().startsWith(ptn)))
-                    .filter(clz -> !artifact.getClazzes().contains(clz))
-                    .filter(clz -> !artifact.getTransitiveDependencies().contains(clz))
+            final Set<Clazz> artifactClasses = artifact.getClazzes();
+            final Set<Clazz> transitiveDependencies = artifact.getTransitiveDependencies();
+
+            final Set<Clazz> removable = cp.getClazzes().stream().parallel()
+                    .filter(this::excludedClassesPredicate)
+                    .filter(clz -> !artifactClasses.contains(clz))
+                    .filter(clz -> !transitiveDependencies.contains(clz))
                     .collect(Collectors.toSet());
 
-            for (final Path jar : dependencyJars) {
+            dependencyJars.stream().parallel().forEach(jar -> {
                 logger.trace("Try to minimize jar '{}'", jar);
                 jarMan.removeEntry(jar, removable);
-            }
+            });
         } catch (final IOException e) {
             throw new RuntimeException("Error happened while minimizing jars in dir:" + libDir, e);
         }
+    }
+
+    private boolean excludedClassesPredicate(final Clazz clz){
+        for (final String excludedClass : excludedClasses) {
+            if(clz.getName().startsWith(excludedClass)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @VisibleForTesting
