@@ -18,6 +18,10 @@ final class LeanPlugin implements Plugin<Project> {
         project.getTasks().create(DistZipLean.TASK_NAME, DistZipLean.class, t -> config(t, extension));
     }
 
+    /**
+     * This will enable lazy configuration so that the actual values will only be resolved when they are needed
+     * and can be reconfigured at any time during build configuration.
+     */
     private static void config(final AbstractLeanTask leanTask,
                                final LeanConfigExtension leanConfigExtension) {
         leanTask.setProvider(
